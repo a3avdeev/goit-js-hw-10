@@ -4,36 +4,36 @@ import debounce from 'lodash.debounce';
 import { fetchCountries } from './fetchCountries';
 
 const DEBOUNCE_DELAY = 300;
-const textInput = document.querySelector('#search-box');
+const input = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
 const countryInfo = document.querySelector('.country-info');
 
-textInput.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
+input.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
 
 function onSearch() {
-  const countryName = textInput.value.trim();
+  const countryName = input.value.trim();
 
-  if (countryName === '') {
+  if (countryName === 'null') {
     countryInfo.innerHTML = '';
     countryList.innerHTML = '';
     return;
   }
 
-  fetchCountries(countryName).then(data => inputCheck(data));
+  fetchCountries(countryName).then(country => inputCheck(country));
 }
 
-function inputCheck(data) {
+function inputCheck(country) {
   countryInfo.innerHTML = '';
   countryList.innerHTML = '';
 
-  if (data?.length === 1) {
-    return insertCountryInfo(data[0]);
-  } else if (data?.length >= 2 && data.length <= 10) {
-    return renderCountries(data);
-  } else if (data?.length > 10) {
+  if (country?.length > 10) {
     return Notiflix.Notify.info(
       'Too many matches found. Please enter a more specific name.'
     );
+  } else if (country?.length >= 2 && country?.length <= 10) {
+    return renderCountries(country);
+  } else if (country?.length === 1) {
+    return insertCountryInfo(country[0]);
   } else Notiflix.Notify.failure('Oops, there is no country with that name');
 }
 
@@ -44,21 +44,47 @@ function insertCountryInfo({
   flags: { svg },
   languages,
 }) {
-  const choosenCountry = `<h2 class="country-title"><img width="40" alt="flag" src="${svg} "/>${official}</h2>
-        <p class="country-text">Capital: ${capital}</p>
-        <p class="country-text">Population: ${population}</p>
-        <p class="country-text">Languages: ${Object.values(languages).join(
-          ','
-        )}</p>
+  const choosenCountry = `<h1 class="country-title"><img width="40" height="30" alt="flag" src="${svg}"> ${official}</h1>
+        <p class="country-text"><b>Capital: </b> ${capital}</p>
+        <p class="country-text"><b>Population: </b> ${population}</p>
+        <p class="country-text"><b>Languages: </b> ${Object.values(
+          languages
+        ).join(',')}</p>
   `;
   countryInfo.insertAdjacentHTML('beforeend', choosenCountry);
+
+  const countryTitle = document.querySelector('.country-title');
+  countryTitle.style.display = 'flex';
+  countryTitle.style.alignItems = 'center';
+  countryTitle.firstChild.style.marginRight = '10px';
 }
 
-function renderCountries(data) {
-  const itemList = data
+function renderCountries(country) {
+  const itemList = country
     .map(({ name: { official }, flags: { svg } }) => {
-      return `<li class="list-item"><img width="40" alt="flag" src="${svg} "/>${official}</li>`;
+      return `<li class="country-item"><img width="40" height="30" alt="flag" src="${svg}"> ${official}</li>`;
     })
     .join('');
   countryList.insertAdjacentHTML('beforeend', itemList);
+
+  const list = document.querySelectorAll('.country-item');
+
+  countryList.style.listStyle = 'none';
+  countryList.style.padding = '0';
+
+  list.forEach(el => {
+    el.style.fontSize = '20px';
+  });
+  list.forEach(el => {
+    el.style.display = 'flex';
+  });
+  list.forEach(el => {
+    el.style.alignItems = 'center';
+  });
+  list.forEach(el => {
+    el.style.marginTop = '10px';
+  });
+  list.forEach(el => {
+    el.firstChild.style.marginRight = '10px';
+  });
 }
