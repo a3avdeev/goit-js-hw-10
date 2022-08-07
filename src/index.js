@@ -13,7 +13,7 @@ input.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
 function onSearch() {
   const countryName = input.value.trim();
 
-  if (countryName === 'null') {
+  if (countryName === '') {
     countryInfo.innerHTML = '';
     countryList.innerHTML = '';
     return;
@@ -49,9 +49,10 @@ function insertCountryInfo({
         <p class="country-text"><b>Population: </b> ${population}</p>
         <p class="country-text"><b>Languages: </b> ${Object.values(
           languages
-        ).join(',')}</p>
+        ).join(', ')}</p>
   `;
   countryInfo.insertAdjacentHTML('beforeend', choosenCountry);
+  console.log(choosenCountry);
 
   const countryTitle = document.querySelector('.country-title');
   countryTitle.style.display = 'flex';
@@ -66,6 +67,7 @@ function renderCountries(country) {
     })
     .join('');
   countryList.insertAdjacentHTML('beforeend', itemList);
+  console.log(itemList);
 
   const list = document.querySelectorAll('.country-item');
 
