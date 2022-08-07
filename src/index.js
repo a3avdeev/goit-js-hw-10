@@ -4,6 +4,7 @@ import debounce from 'lodash.debounce';
 import { fetchCountries } from './fetchCountries';
 
 const DEBOUNCE_DELAY = 300;
+const body = document.querySelector('body');
 const input = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
 const countryInfo = document.querySelector('.country-info');
@@ -52,7 +53,6 @@ function insertCountryInfo({
         ).join(', ')}</p>
   `;
   countryInfo.insertAdjacentHTML('beforeend', choosenCountry);
-  console.log(choosenCountry);
 
   const countryTitle = document.querySelector('.country-title');
   countryTitle.style.display = 'flex';
@@ -67,7 +67,6 @@ function renderCountries(country) {
     })
     .join('');
   countryList.insertAdjacentHTML('beforeend', itemList);
-  console.log(itemList);
 
   const list = document.querySelectorAll('.country-item');
 
@@ -90,3 +89,6 @@ function renderCountries(country) {
     el.firstChild.style.marginRight = '10px';
   });
 }
+
+body.style.backgroundImage = 'radial-gradient(grey 5%, transparent 0)';
+body.style.backgroundSize = '20px 20px';
